@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Simple Downloader</title>
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/fork-awesome/1.1.7/css/fork-awesome.min.css" rel="stylesheet" />
+        <style>
+            .row, input {
+                text-align: center;
+            }
+            .notification {
+                color: blue;
+            }
+            table {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+
+            <div class="row">
+                <div class="twelve columns" style="margin-top: 5%">
+                    <h4>Simple Downloader</h4>
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <h5 class="notification">{{ messages[0] | safe }}</h5>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="two columns" style="margin-top: 5%"></div>
+                <div class="eight columns" style="margin-top: 5%">
+                    <h5>Download File</h5>
+                    <form action="{{ url_for('post_download') }}" method="post">
+                        <input class="u-full-width" type="text" placeholder="Paste URL here" name="url" autofocus>
+                        <input class="button-primary" type="submit" value="Download">
+                    </form>
+                </div>
+                <div class="two columns" style="margin-top: 5%"></div>
+            </div>
+
+            {% if downloads | length %}
+                <div class="row">
+                    <div class="twelve columns" style="margin-top: 5%">
+                        <h5>Downloads</h5>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Date</th>
+                                    <th>Size</th>
+                                    <th>Progress</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for file in downloads %}
+                                    <tr>
+                                        <td>{{ file.name }}</td>
+                                        <td>{{ file.creation_date }}</td>
+                                        <td>{{ file.size }}</td>
+                                        <td>{{ file.progress }}</td>
+                                        <td><a href="{{ file.delete_url }}"><i class="fa fa-trash"></i></a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </body>
+</html>
