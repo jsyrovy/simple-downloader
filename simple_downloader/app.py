@@ -3,7 +3,7 @@ import loguru
 
 import downloader
 
-__version__ = "1.0"
+__version__ = "1.1"
 
 app = flask.Flask(__name__)
 app.config["SECRET_KEY"] = "jGa7jSevicjvhXtUGhpkLKxfpvghFu5e"
@@ -24,6 +24,13 @@ def get_delete(name):
         flask.flash(str(e))
 
     return flask.redirect(flask.url_for("get_index"))
+
+
+@app.route("/downloads")
+def get_downloads():
+    data = [f.to_dict() for f in downloader.get_sorted_downloaded_files()]
+
+    return flask.jsonify(data=data)
 
 
 @app.route("/download", methods=["POST"])
