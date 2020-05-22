@@ -3,7 +3,7 @@ import loguru
 
 import downloader
 
-__version__ = "1.0"
+__version__ = "1.1"
 
 app = flask.Flask(__name__)
 app.config["SECRET_KEY"] = "jGa7jSevicjvhXtUGhpkLKxfpvghFu5e"
