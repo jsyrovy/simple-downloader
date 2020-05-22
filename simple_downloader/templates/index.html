@@ -77,6 +77,10 @@
                 </div>
 
                 <script>
+                    function refresh_table() {
+                        $("#downloads").DataTable().ajax.reload();
+                    }
+                    
                     $(document).ready(function() {
                         $("#downloads").DataTable( {
                             "ajax": "{{ url_for('get_downloads') }}",
@@ -90,6 +94,8 @@
                             "order": [[1, "desc"]]
                         } );
                     } );
+
+                    setInterval(refresh_table, 5000);
                 </script>
             {% endif %}
 
