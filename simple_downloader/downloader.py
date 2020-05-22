@@ -53,12 +53,18 @@ class LocalFile:
         self.size = hurry.filesize.size(self.path.stat().st_size)
         self.__wget_log = WgetLog(self.name)
         self.progress = self.__wget_log.progress
-        self.delete_url = flask.url_for("get_delete", name=self.name)
 
     def delete(self):
         self.__wget_log.delete()
         self.path.unlink()
         loguru.logger.debug(f"LocalFile '{self.name}' was deleted.")
+
+    def to_dict(self):
+        return {"name": self.name,
+                "creation_date": self.creation_date,
+                "size": self.size,
+                "progress": self.progress,
+                "actions": f"<a href='{flask.url_for('get_delete', name=self.name)}'><i class='fa fa-trash'></i></a>"}
 
 
 class WgetLog:

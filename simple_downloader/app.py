@@ -26,6 +26,13 @@ def get_delete(name):
     return flask.redirect(flask.url_for("get_index"))
 
 
+@app.route("/downloads")
+def get_downloads():
+    data = [f.to_dict() for f in downloader.get_sorted_downloaded_files()]
+
+    return flask.jsonify(data=data)
+
+
 @app.route("/download", methods=["POST"])
 def post_download():
     try:
