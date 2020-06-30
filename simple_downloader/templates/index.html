@@ -49,56 +49,57 @@
                 <div class="two columns" style="margin-top: 5%"></div>
             </div>
 
-            {% if downloads | length %}
-                <div class="row">
-                    <div class="twelve columns" style="margin-top: 5%">
-                        <h5>Downloads</h5>
-                        <table id="downloads" class="display">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Date</th>
-                                    <th>Size</th>
-                                    <th>Progress</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Date</th>
-                                    <th>Size</th>
-                                    <th>Progress</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+            <div class="row">
+                <div class="twelve columns" style="margin-top: 5%">
+                    <h5>Downloads</h5>
+                    <table id="downloads" class="display">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Size</th>
+                                <th>Progress</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Size</th>
+                                <th>Progress</th>
+                                <th>Actions</th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
-
-                <script>
-                    function refresh_table() {
-                        $("#downloads").DataTable().ajax.reload();
-                    }
-                    
-                    $(document).ready(function() {
-                        $("#downloads").DataTable( {
-                            "ajax": "{{ url_for('get_downloads') }}",
-                            "columns": [
-                                { "data": "name" },
-                                { "data": "creation_date" },
-                                { "data": "size" },
-                                { "data": "progress" },
-                                { "data": "actions" }
-                            ],
-                            "order": [[1, "desc"]]
-                        } );
-                    } );
-
-                    setInterval(refresh_table, 5000);
-                </script>
-            {% endif %}
+            </div>
 
         </div>
+
+        <script>
+            function refresh_table() {
+                $("#downloads").DataTable().ajax.reload();
+            }
+            
+            $(document).ready(function() {
+                $("#downloads").DataTable( {
+                    "ajax": "{{ url_for('get_downloads') }}",
+                    "columns": [
+                        { "data": "name" },
+                        { "data": "date" },
+                        { "data": "size" },
+                        { "data": "progress" },
+                        { "data": "actions" }
+                    ],
+                    "order": [[1, "desc"]],
+                    "sScrollX": "100%",
+                    "sScrollXInner": "100%",
+                    "bScrollCollapse": true
+                } );
+            } );
+
+            setInterval(refresh_table, 5000);
+        </script>
     </body>
 </html>

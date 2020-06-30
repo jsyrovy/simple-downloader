@@ -49,7 +49,7 @@ class LocalFile:
     def __init__(self, name):
         self.name = name
         self.path = pathlib.Path(FOLDER_DOWNLOADS) / name
-        self.creation_date = datetime.datetime.fromtimestamp(self.path.stat().st_ctime).strftime("%Y-%m-%d %H:%M:%S")
+        self.modification_date = datetime.datetime.fromtimestamp(self.path.stat().st_mtime).strftime("%Y-%m-%d %H:%M:%S")
         self.size = hurry.filesize.size(self.path.stat().st_size)
         self.__wget_log = WgetLog(self.name)
         self.progress = self.__wget_log.progress
@@ -61,7 +61,7 @@ class LocalFile:
 
     def to_dict(self):
         return {"name": self.name,
-                "creation_date": self.creation_date,
+                "date": self.modification_date,
                 "size": self.size,
                 "progress": self.progress,
                 "actions": f"<a href='{flask.url_for('get_delete', name=self.name)}'><i class='fa fa-trash'></i></a>"}
@@ -100,6 +100,6 @@ class WgetLog:
 
 def get_sorted_downloaded_files():
     files = [LocalFile(path.name) for path in pathlib.Path(FOLDER_DOWNLOADS).glob("*")]
-    files.sort(key=lambda f: f.creation_date, reverse=True)
+    files.sort(key=lambda f: f.modification_date, reverse=True)
     loguru.logger.debug([file.name for file in files])
     return files
