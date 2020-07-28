@@ -55,6 +55,7 @@
                     <table id="downloads" class="display">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Name</th>
                                 <th>Date</th>
                                 <th>Size</th>
@@ -64,6 +65,7 @@
                         </thead>
                         <tfoot>
                             <tr>
+                                <th></th>
                                 <th>Name</th>
                                 <th>Date</th>
                                 <th>Size</th>
@@ -81,23 +83,30 @@
             function refresh_table() {
                 $("#downloads").DataTable().ajax.reload();
             }
-            
-            $(document).ready(function() {
-                $("#downloads").DataTable( {
+
+            $(document).ready(function () {
+                $("#downloads").DataTable({
                     "ajax": "{{ url_for('get_downloads') }}",
                     "columns": [
+                        { "data": "type" },
                         { "data": "name" },
                         { "data": "date" },
                         { "data": "size" },
                         { "data": "progress" },
                         { "data": "actions" }
                     ],
+                    "columnDefs": [
+                        {
+                            "targets": 0,
+                            "orderable": false,
+                            "className": "dt-body-center"
+                        }],
                     "order": [[1, "desc"]],
                     "sScrollX": "100%",
                     "sScrollXInner": "100%",
                     "bScrollCollapse": true
-                } );
-            } );
+                });
+            });
 
             setInterval(refresh_table, 5000);
         </script>

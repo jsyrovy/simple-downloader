@@ -1,4 +1,5 @@
 import datetime
+import enum
 import pathlib
 import re
 import shutil
@@ -45,10 +46,20 @@ class Downloader:
         return shutil.which(self.__app) is not None
 
 
+class FileType(enum.Enum):
+    GENERAL = "file-o"
+    ARCHIVE = "file-archive-o"
+    AUDIO = "file-audio-o"
+    IMAGE = "file-image-o"
+    PDF = "file-pdf-o"
+    VIDEO = "file-video-o"
+
+
 class LocalFile:
     def __init__(self, name):
         self.name = name
         self.path = pathlib.Path(FOLDER_DOWNLOADS) / name
+        self.type = get_file_type(self.path)
         self.modification_date = datetime.datetime.fromtimestamp(self.path.stat().st_mtime).strftime("%Y-%m-%d %H:%M:%S")
         self.size = hurry.filesize.size(self.path.stat().st_size)
         self.__wget_log = WgetLog(self.name)
@@ -60,7 +71,8 @@ class LocalFile:
         loguru.logger.debug(f"LocalFile '{self.name}' was deleted.")
 
     def to_dict(self):
-        return {"name": self.name,
+        return {"type": f"<i class='fa fa-{self.type.value}'></i>",
+                "name": self.name,
                 "date": self.modification_date,
                 "size": self.size,
                 "progress": self.progress,
@@ -103,3 +115,24 @@ def get_sorted_downloaded_files():
     files.sort(key=lambda f: f.modification_date, reverse=True)
     loguru.logger.debug([file.name for file in files])
     return files
+
+
+def get_file_type(path):
+    extension = path.suffix.lower()[1:]
+
+    if extension in ["7z", "gz", "rar", "tar", "zip"]:
+        return FileType.ARCHIVE
+
+    if extension in ["amr", "flac", "m4a", "mid", "mp3", "ogg", "wav"]:
+        return FileType.AUDIO
+
+    if extension in ["bmp", "gif", "ico", "jpeg", "jpg", "png", "psd", "tif"]:
+        return FileType.IMAGE
+
+    if extension == "pdf":
+        return FileType.PDF
+
+    if extension in ["avi", "flv", "m4v", "mkv", "mov", "mp4", "mpg", "webm", "wmv"]:
+        return FileType.VIDEO
+
+    return FileType.GENERAL
