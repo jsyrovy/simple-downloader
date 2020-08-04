@@ -76,7 +76,7 @@ class LocalFile:
                 "date": self.modification_date,
                 "size": self.size,
                 "progress": self.progress,
-                "actions": f"<a href='{flask.url_for('get_delete', name=self.name)}'><i class='fa fa-trash'></i></a>"}
+                "actions": f"<a href='{flask.url_for('views.get_delete', name=self.name)}'><i class='fa fa-trash'></i></a>"}
 
 
 class WgetLog:

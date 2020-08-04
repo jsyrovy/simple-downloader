@@ -41,7 +41,7 @@
                 <div class="two columns" style="margin-top: 5%"></div>
                 <div class="eight columns" style="margin-top: 5%">
                     <h5>Download File</h5>
-                    <form action="{{ url_for('post_download') }}" method="post">
+                    <form action="{{ url_for('views.post_download') }}" method="post">
                         <input class="u-full-width" type="text" placeholder="Paste URL here" name="url" autofocus>
                         <input class="button-primary" type="submit" value="Download">
                     </form>
@@ -86,7 +86,7 @@
 
             $(document).ready(function () {
                 $("#downloads").DataTable({
-                    "ajax": "{{ url_for('get_downloads') }}",
+                    "ajax": "{{ url_for('views.get_downloads') }}",
                     "columns": [
                         { "data": "type" },
                         { "data": "name" },
