@@ -12,6 +12,7 @@ import loguru
 
 FOLDER_DOWNLOADS = "downloads"
 FOLDER_WGET_LOGS = "wget_logs"
+ESCAPED_NAME_SEPARATOR = "|"
 
 
 class RemoteFile:
@@ -56,9 +57,10 @@ class FileType(enum.Enum):
 
 
 class LocalFile:
-    def __init__(self, name):
-        self.name = name
-        self.path = pathlib.Path(FOLDER_DOWNLOADS) / name
+    def __init__(self, path):
+        self.path = path
+        self.name = self.path.name if str(self.path.parent) == FOLDER_DOWNLOADS else "/".join(self.path.parts[1:])
+        self.escaped_name = self.name.replace("/", ESCAPED_NAME_SEPARATOR)
         self.type = get_file_type(self.path)
         self.modification_date = datetime.datetime.fromtimestamp(self.path.stat().st_mtime).strftime("%Y-%m-%d %H:%M:%S")
         self.size = hurry.filesize.size(self.path.stat().st_size)
@@ -76,7 +78,12 @@ class LocalFile:
                 "date": self.modification_date,
                 "size": self.size,
                 "progress": self.progress,
-                "actions": f"<a href='{flask.url_for('views.get_delete', name=self.name)}'><i class='fa fa-trash'></i></a>"}
+                "actions": f"<a href='{flask.url_for('views.get_delete', name=self.escaped_name)}'><i class='fa fa-trash'></i></a>"}
+
+    @staticmethod
+    def from_escaped_name(name):
+        path = pathlib.Path(FOLDER_DOWNLOADS) / name.replace(ESCAPED_NAME_SEPARATOR, "/")
+        return LocalFile(path)
 
 
 class WgetLog:
@@ -111,7 +118,7 @@ class WgetLog:
 
 
 def get_sorted_downloaded_files():
-    files = [LocalFile(path.name) for path in pathlib.Path(FOLDER_DOWNLOADS).glob("*")]
+    files = [LocalFile(path) for path in pathlib.Path(FOLDER_DOWNLOADS).rglob("*") if path.is_file()]
     files.sort(key=lambda f: f.modification_date, reverse=True)
     loguru.logger.debug([file.name for file in files])
     return files

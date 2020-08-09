@@ -14,8 +14,9 @@ def get_index():
 @mod.route("/delete/<name>")
 def get_delete(name):
     try:
-        downloader.LocalFile(name).delete()
-        flask.flash(f"File '{name}' was deleted.")
+        local_file = downloader.LocalFile.from_escaped_name(name)
+        local_file.delete()
+        flask.flash(f"File '{local_file.name}' was deleted.")
     except Exception as e:
         loguru.logger.error(str(e))
         flask.flash(str(e))
