@@ -9,6 +9,7 @@ import urllib.parse
 import flask
 import hurry.filesize
 import loguru
+import typing
 
 FOLDER_DOWNLOADS = "downloads"
 FOLDER_WGET_LOGS = "wget_logs"
@@ -16,34 +17,34 @@ ESCAPED_NAME_SEPARATOR = "|"
 
 
 class RemoteFile:
-    def __init__(self, url):
+    def __init__(self, url: str) -> None:
         self.__url = urllib.parse.urlparse(url)
         self.name = pathlib.Path(self.__url.path).name
 
         if not self.__is_valid():
             raise AttributeError("URL isn't valid.")
 
-    def download(self):
+    def download(self) -> None:
         Downloader().download(self.__url.geturl(), self.name)
 
-    def __is_valid(self):
+    def __is_valid(self) -> bool:
         return all([self.__url.scheme, self.__url.netloc, self.__url.path])
 
 
 class Downloader:
-    def __init__(self):
+    def __init__(self) -> None:
         self.__app = "wget"
 
         if not self.__is_available():
             raise AttributeError("<a href='https://www.gnu.org/software/wget/' target='_blank' "
                                  "rel='noopener noreferrer'>WGET</a> isn't installed.")
 
-    def download(self, url, name):
+    def download(self, url: str, name: str) -> None:
         args = [self.__app, "-bc", "-o", f"wget_logs/{name}", "-P", "downloads", url]
         subprocess.run(args)
         loguru.logger.debug(f"Process {args} was run.")
 
-    def __is_available(self):
+    def __is_available(self) -> bool:
         return shutil.which(self.__app) is not None
 
 
@@ -57,7 +58,7 @@ class FileType(enum.Enum):
 
 
 class LocalFile:
-    def __init__(self, path):
+    def __init__(self, path: pathlib.Path) -> None:
         self.path = path
         self.name = self.path.name if str(self.path.parent) == FOLDER_DOWNLOADS else "/".join(self.path.parts[1:])
         self.escaped_name = self.name.replace("/", ESCAPED_NAME_SEPARATOR)
@@ -67,12 +68,12 @@ class LocalFile:
         self.__wget_log = WgetLog(self.name)
         self.progress = self.__wget_log.progress
 
-    def delete(self):
+    def delete(self) -> None:
         self.__wget_log.delete()
         self.path.unlink()
         loguru.logger.debug(f"LocalFile '{self.name}' was deleted.")
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return {"type": f"<i class='fa fa-{self.type.value}'></i>",
                 "name": self.name,
                 "date": self.modification_date,
@@ -81,13 +82,13 @@ class LocalFile:
                 "actions": f"<a href='{flask.url_for('views.get_delete', name=self.escaped_name)}'><i class='fa fa-trash'></i></a>"}
 
     @staticmethod
-    def from_escaped_name(name):
+    def from_escaped_name(name: str) -> "LocalFile":
         path = pathlib.Path(FOLDER_DOWNLOADS) / name.replace(ESCAPED_NAME_SEPARATOR, "/")
         return LocalFile(path)
 
 
 class WgetLog:
-    def __init__(self, name):
+    def __init__(self, name: str) -> None:
         self.__name = name
         self.__path = pathlib.Path(FOLDER_WGET_LOGS) / name
         self.__lines = ""
@@ -100,16 +101,16 @@ class WgetLog:
         self.__set_lines()
         self.__set_progress()
 
-    def delete(self):
+    def delete(self) -> None:
         if self.__path.exists():
             self.__path.unlink()
             loguru.logger.debug(f"WgetLog '{self.__name}' was deleted.")
 
-    def __set_lines(self):
+    def __set_lines(self) -> None:
         with open(self.__path, "r", encoding="utf-8") as f:
             self.__lines = f.read().split("\n")
 
-    def __set_progress(self):
+    def __set_progress(self) -> None:
         for line in reversed(self.__lines):
             match = re.search(r"\d*%", line)
             if match:
@@ -117,14 +118,14 @@ class WgetLog:
                 return
 
 
-def get_sorted_downloaded_files():
+def get_sorted_downloaded_files() -> typing.List[LocalFile]:
     files = [LocalFile(path) for path in pathlib.Path(FOLDER_DOWNLOADS).rglob("*") if path.is_file()]
     files.sort(key=lambda f: f.modification_date, reverse=True)
     loguru.logger.debug([file.name for file in files])
     return files
 
 
-def get_file_type(path):
+def get_file_type(path: pathlib.Path) -> FileType:
     extension = path.suffix.lower()[1:]
 
     if extension in ["7z", "gz", "rar", "tar", "zip"]:
