@@ -63,7 +63,7 @@ class LocalFile:
         self.name = self.path.name if str(self.path.parent) == FOLDER_DOWNLOADS else "/".join(self.path.parts[1:])
         self.escaped_name = self.name.replace("/", ESCAPED_NAME_SEPARATOR)
         self.type = get_file_type(self.path)
-        self.modification_date = datetime.datetime.fromtimestamp(self.path.stat().st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+        self.__date = datetime.datetime.fromtimestamp(self.path.stat().st_ctime)
         self.size = hurry.filesize.size(self.path.stat().st_size)
         self.__wget_log = WgetLog(self.name)
         self.progress = self.__wget_log.progress
@@ -73,10 +73,16 @@ class LocalFile:
         self.path.unlink()
         loguru.logger.debug(f"LocalFile '{self.name}' was deleted.")
 
+    def get_date(self) -> datetime.datetime:
+        if self.__wget_log.date:
+            return self.__wget_log.date
+
+        return self.__date
+
     def to_dict(self) -> dict:
         return {"type": f"<i class='fa fa-{self.type.value}'></i>",
                 "name": self.name,
-                "date": self.modification_date,
+                "date": self.get_date().strftime("%Y-%m-%d %H:%M:%S"),
                 "size": self.size,
                 "progress": self.progress,
                 "actions": f"<a href='{flask.url_for('views.get_delete', name=self.escaped_name)}'><i class='fa fa-trash'></i></a>"}
@@ -93,6 +99,7 @@ class WgetLog:
         self.__path = pathlib.Path(FOLDER_WGET_LOGS) / name
         self.__lines = ""
         self.progress = "N/A"
+        self.date = None
 
         if not self.__path.exists():
             loguru.logger.warning(f"Path '{self.__path}' doesn't exist.")
@@ -100,6 +107,7 @@ class WgetLog:
 
         self.__set_lines()
         self.__set_progress()
+        self.date = datetime.datetime.fromtimestamp(self.__path.stat().st_ctime)
 
     def delete(self) -> None:
         if self.__path.exists():
@@ -120,7 +128,7 @@ class WgetLog:
 
 def get_sorted_downloaded_files() -> typing.List[LocalFile]:
     files = [LocalFile(path) for path in pathlib.Path(FOLDER_DOWNLOADS).rglob("*") if path.is_file()]
-    files.sort(key=lambda f: f.modification_date, reverse=True)
+    files.sort(key=lambda f: f.get_date(), reverse=True)
     loguru.logger.debug([file.name for file in files])
     return files
 
