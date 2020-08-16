@@ -85,7 +85,19 @@ class LocalFile:
                 "date": self.get_date().strftime("%Y-%m-%d %H:%M:%S"),
                 "size": self.size,
                 "progress": self.progress,
-                "actions": f"<a href='{flask.url_for('views.get_delete', name=self.escaped_name)}'><i class='fa fa-trash'></i></a>"}
+                "actions": f"<a href='{flask.url_for('views.get_delete', name=self.escaped_name)}'><i class='fa fa-trash'></i></a>"
+                           "&nbsp;&nbsp;&nbsp;"
+                           f"<a href='https://www.google.com/search?q={self.__get_clean_name()}' target='_blank' "
+                           "rel='noopener noreferrer'><i class='fa fa-info'></i></a>"}
+
+    def __get_clean_name(self):
+        name = self.path.name.replace(self.path.suffix, "")
+        banned_chars = [".", "-", "_"]
+
+        for char in banned_chars:
+            name = name.replace(char, " ")
+
+        return name
 
     @staticmethod
     def from_escaped_name(name: str) -> "LocalFile":
