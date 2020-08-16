@@ -128,6 +128,7 @@ class WgetLog:
 
 def get_sorted_downloaded_files() -> typing.List[LocalFile]:
     dirs = [path for path in pathlib.Path(FOLDER_DOWNLOADS).rglob("*") if path.is_dir() and not is_dir_hidden(path)]
+    dirs.append(pathlib.Path(FOLDER_DOWNLOADS))
     files = []
 
     for directory in dirs:
