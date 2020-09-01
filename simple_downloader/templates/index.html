@@ -41,7 +41,7 @@
                 <div class="two columns" style="margin-top: 5%"></div>
                 <div class="eight columns" style="margin-top: 5%">
                     <h5>Download File</h5>
-                    <form action="{{ url_for('post_download') }}" method="post">
+                    <form action="{{ url_for('views.post_download') }}" method="post">
                         <input class="u-full-width" type="text" placeholder="Paste URL here" name="url" autofocus>
                         <input class="button-primary" type="submit" value="Download">
                     </form>
@@ -55,6 +55,7 @@
                     <table id="downloads" class="display">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Name</th>
                                 <th>Date</th>
                                 <th>Size</th>
@@ -64,6 +65,7 @@
                         </thead>
                         <tfoot>
                             <tr>
+                                <th></th>
                                 <th>Name</th>
                                 <th>Date</th>
                                 <th>Size</th>
@@ -81,25 +83,33 @@
             function refresh_table() {
                 $("#downloads").DataTable().ajax.reload();
             }
-            
-            $(document).ready(function() {
-                $("#downloads").DataTable( {
-                    "ajax": "{{ url_for('get_downloads') }}",
+
+            $(document).ready(function () {
+                $("#downloads").DataTable({
+                    "ajax": "{{ url_for('views.get_downloads') }}",
                     "columns": [
+                        { "data": "type" },
                         { "data": "name" },
                         { "data": "date" },
                         { "data": "size" },
                         { "data": "progress" },
                         { "data": "actions" }
                     ],
-                    "order": [[1, "desc"]],
+                    "columnDefs": [
+                        {
+                            "targets": 0,
+                            "orderable": false,
+                            "className": "dt-body-center"
+                        }],
+                    "order": [[2, "desc"]],
                     "sScrollX": "100%",
                     "sScrollXInner": "100%",
-                    "bScrollCollapse": true
-                } );
-            } );
+                    "bScrollCollapse": true,
+                    "paging": false
+                });
+            });
 
-            setInterval(refresh_table, 5000);
+            setInterval(refresh_table, 15000);
         </script>
     </body>
 </html>
