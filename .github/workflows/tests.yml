@@ -1,0 +1,19 @@
+name: Tests
+on: push
+jobs:
+  smoke_test:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8.3"
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Test
+        run: |
+          python autoapp.py &
+          sleep 5
+          curl http://localhost:5000 | grep "Simple Downloader"
