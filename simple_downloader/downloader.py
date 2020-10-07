@@ -9,7 +9,6 @@ import urllib.parse
 import flask
 import hurry.filesize
 import loguru
-import typing
 
 FOLDER_DOWNLOADS = "downloads"
 FOLDER_WGET_LOGS = "wget_logs"
@@ -138,7 +137,7 @@ class WgetLog:
                 return
 
 
-def get_sorted_downloaded_files() -> typing.List[LocalFile]:
+def get_sorted_downloaded_files() -> list[LocalFile]:
     dirs = [path for path in pathlib.Path(FOLDER_DOWNLOADS).rglob("*") if path.is_dir() and not is_dir_hidden(path)]
     dirs.append(pathlib.Path(FOLDER_DOWNLOADS))
     files = []
