@@ -2,13 +2,14 @@ import flask
 import loguru
 
 from simple_downloader import downloader
+from simple_downloader import drive_space
 
 mod = flask.Blueprint("views", __name__)
 
 
 @mod.route("/")
 def get_index():
-    return flask.render_template("index.html", downloads=downloader.get_sorted_downloaded_files())
+    return flask.render_template("index.html", drive_space=drive_space.get_drive_space(downloader.FOLDER_DOWNLOADS))
 
 
 @mod.route("/delete/<name>")

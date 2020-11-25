@@ -77,6 +77,17 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="twelve columns" style="margin-top: 5%">
+                    <p>
+                        Drive space at "{{ drive_space.path }}"
+                        | Total: {{ drive_space.total }}
+                        | Used: {{ drive_space.used }}
+                        | Free: {{ drive_space.free }} ({{ drive_space.free_perc }})
+                    </p>
+                </div>
+            </div>
+
         </div>
 
         <script>
