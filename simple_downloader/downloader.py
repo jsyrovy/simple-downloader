@@ -13,6 +13,7 @@ import loguru
 FOLDER_DOWNLOADS = "downloads"
 FOLDER_WGET_LOGS = "wget_logs"
 ESCAPED_NAME_SEPARATOR = "|"
+IGNORED_FILES = (".ds_store", "._.ds_store")
 
 
 class RemoteFile:
@@ -143,7 +144,7 @@ def get_sorted_downloaded_files() -> list[LocalFile]:
     files = []
 
     for directory in dirs:
-        files.extend([LocalFile(path) for path in directory.glob("*") if path.is_file()])
+        files.extend([LocalFile(path) for path in directory.glob("*") if path.is_file() and path.name.lower() not in IGNORED_FILES])
 
     files.sort(key=lambda f: f.get_date(), reverse=True)
     loguru.logger.debug([file.name for file in files])
