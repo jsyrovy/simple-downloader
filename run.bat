@@ -1,1 +1,0 @@
-docker run -v %CD%\downloads:/app/downloads -p 80:80 --name simple-downloader -it jsyrovy/simple-downloader
