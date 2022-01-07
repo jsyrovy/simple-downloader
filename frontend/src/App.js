@@ -17,9 +17,9 @@ function App() {
                     </Col>
                 </Row>
                 <Row className="my-5 text-center">
-                    <Col></Col>
+                    <Col/>
                     <Col xs={5}><Form2/></Col>
-                    <Col></Col>
+                    <Col/>
                 </Row>
                 <Row className="my-5 text-center">
                     <Col>
@@ -28,7 +28,7 @@ function App() {
                 </Row>
                 <Row className="my-5 text-center">
                     <Col>
-                        <Footer/>
+                        <Footer path="path" total="666G" used="66G" free="600G" freePerc="90%"/>
                     </Col>
                 </Row>
             </Container>
