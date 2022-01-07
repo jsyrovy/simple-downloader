@@ -4,8 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from "./components/Header";
 import Table from "./components/Table";
 import Footer from "./components/Footer";
-import {Col, Container, Row} from "react-bootstrap";
 import Form2 from "./components/Form";
+import {Col, Container, Row} from "react-bootstrap";
 
 function App() {
     return (
