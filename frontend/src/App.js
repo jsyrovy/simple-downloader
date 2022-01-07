@@ -23,7 +23,22 @@ function App() {
                 </Row>
                 <Row className="my-5 text-center">
                     <Col>
-                        <Table/>
+                        <Table data={[
+                            {
+                                name: "ubuntu.iso",
+                                date: "2022-01-01 10:00:00",
+                                size: "2GB",
+                                progress: "100 %",
+                                actions: ""
+                            },
+                            {
+                                name: "fedora.iso",
+                                date: "2022-01-01 08:00:00",
+                                size: "2GB",
+                                progress: "100 %",
+                                actions: ""
+                            }
+                        ]}/>
                     </Col>
                 </Row>
                 <Row className="my-5 text-center">
