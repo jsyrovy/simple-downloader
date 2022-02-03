@@ -10,15 +10,26 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.9"
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Prepare npm
+        run: |
+          cd frontend/src
+          npm install
       - name: Prepare venv
         run: make init
-      - name: Prepare folder
+      - name: Create folder
         run: mkdir downloads
+      - name: Create test file
+        run: touch test-file
       - name: Test
         run: |
-          make run &
+          make run-backend &
+          make run-frontend &
           sleep 5
-          curl http://localhost:5000 | grep "Simple Downloader"
+          curl http://localhost:5000 | grep "test-file"
   docker_build:
     runs-on: ubuntu-18.04
     steps:

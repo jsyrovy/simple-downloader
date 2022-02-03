@@ -3,22 +3,9 @@ import loguru
 
 from simple_downloader import downloader
 from simple_downloader import drive_space
+from simple_downloader.utils import allow_cors
 
 mod = flask.Blueprint("views", __name__)
-
-
-def enable_cors(func):
-    def wrapper():
-        response = func()
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-
-    return wrapper
-
-
-@mod.route("/")
-def get_index():
-    return flask.render_template("index.html", drive_space=drive_space.get_drive_space(downloader.FOLDER_DOWNLOADS))
 
 
 @mod.route("/delete/<name>")
@@ -35,7 +22,7 @@ def get_delete(name):
 
 
 @mod.route("/downloads")
-@enable_cors
+@allow_cors
 def get_downloads():
     data = [f.to_dict() for f in downloader.get_sorted_downloaded_files()]
 
@@ -56,6 +43,6 @@ def post_download():
 
 
 @mod.route("/drive-space")
-@enable_cors
+@allow_cors
 def get_drive_space():
     return flask.jsonify(drive_space.get_drive_space(downloader.FOLDER_DOWNLOADS))

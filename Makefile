@@ -8,8 +8,10 @@ help:
 	@echo "  show help"
 	@echo "make init"
 	@echo "  create venv and install requirements"
-	@echo "make run"
-	@echo "  run simple-downloader"
+	@echo "make run-backend"
+	@echo "  run backend"
+	@echo "make run-frontend"
+	@echo "  run frontend"
 	@echo "make docker-run"
 	@echo "  run container"
 	@echo "make docker-start"
@@ -25,8 +27,11 @@ init:
 	python3 -m venv venv
 	${PYTHON} -m pip install -r requirements.txt
 
-run:
+run-backend:
 	${PYTHON} autoapp.py
+
+run-frontend:
+	cd frontend/src;yarn start
 
 docker-build:
 	docker build . -t jsyrovy/simple-downloader
