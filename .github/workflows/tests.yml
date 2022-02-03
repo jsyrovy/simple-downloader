@@ -26,9 +26,9 @@ jobs:
         run: touch test-file
       - name: Test
         run: |
-          make run-backend &
           make run-frontend &
-          sleep 5
+          make run-backend &
+          sleep 20
           curl http://localhost:3000 | grep "test-file"
   docker_build:
     runs-on: ubuntu-18.04
