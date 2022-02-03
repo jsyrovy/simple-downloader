@@ -29,6 +29,7 @@ jobs:
           make run-frontend &
           make run-backend &
           sleep 20
+          curl http://localhost:3000
           curl http://localhost:3000 | grep "test-file"
   docker_build:
     runs-on: ubuntu-18.04
