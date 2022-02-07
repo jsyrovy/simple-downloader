@@ -22,6 +22,8 @@ help:
 	@echo "  remove image"
 	@echo "make docker-remove"
 	@echo "  remove container and image"
+	@echo "make test-downloaded-file"
+	@echo "  selenium test"
 
 init:
 	python3 -m venv venv
@@ -49,3 +51,6 @@ docker-remove-image:
 	docker rmi jsyrovy/simple-downloader
 
 docker-remove: docker-remove-container docker-remove-image
+
+test-downloaded-file:
+	${PYTHON} tests/test_downloaded_file.py

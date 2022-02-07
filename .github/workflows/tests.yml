@@ -2,10 +2,16 @@ name: Tests
 on: push
 jobs:
   smoke:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out
         uses: actions/checkout@v2
+      - name: Setup chromedriver
+        uses: nanasess/setup-chromedriver@v1
+      - name: Run chromedriver
+        run: |
+          export DISPLAY=:99
+          chromedriver --url-base=/wd/hub &
       - name: Setup node
         uses: actions/setup-node@v2
         with:
@@ -29,10 +35,9 @@ jobs:
           make run-frontend &
           make run-backend &
           sleep 20
-          curl http://localhost:3000
-          curl http://localhost:3000 | grep "test-file"
+          make test-downloaded-file
   docker_build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out
         uses: actions/checkout@v2
