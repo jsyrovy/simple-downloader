@@ -33,7 +33,7 @@ run-backend:
 	${PYTHON} autoapp.py
 
 run-frontend:
-	cd frontend/src;yarn start
+	cd frontend/src;npm start
 
 docker-build:
 	docker build . -t jsyrovy/simple-downloader
