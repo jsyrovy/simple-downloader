@@ -3,9 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Header from "./components/Header";
 import Table from "./components/Table";
-import Form2 from "./components/Form";
-import {Col, Container, Row} from "react-bootstrap";
+import DownloadForm from "./components/DownloadForm";
 import DriveSpace from "./components/DriveSpace";
+import {Col, Container, Row} from "react-bootstrap";
 
 function App() {
     return (<>
@@ -17,7 +17,7 @@ function App() {
                 </Row>
                 <Row className="my-5 text-center">
                     <Col/>
-                    <Col xs={5}><Form2/></Col>
+                    <Col xs={5}><DownloadForm/></Col>
                     <Col/>
                 </Row>
                 <Row className="my-5 text-center">

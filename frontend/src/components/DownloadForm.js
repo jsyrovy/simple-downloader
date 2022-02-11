@@ -1,12 +1,12 @@
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button';
 
-function Form2() {
+function DownloadForm() {
     return (
         <>
             <h3 className="my-2">Download file</h3>
             <Form>
-                <Form.Control className="my-2 text-center" type="text" placeholder="Paste URL here" autoFocus/>
+                <Form.Control className="my-2 text-center" type="text" placeholder="Paste URL here" name="url" autoFocus/>
                 <Button className="my-2" variant="primary" type="submit">
                     Download
                 </Button>
@@ -15,4 +15,4 @@ function Form2() {
     );
 }
 
-export default Form2;
+export default DownloadForm;
