@@ -1,8 +1,10 @@
 import flask
 import loguru
+from flask import Response
 
 from simple_downloader import downloader
 from simple_downloader import drive_space
+from simple_downloader.downloader import InvalidUrlError
 from simple_downloader.utils import allow_cors
 
 mod = flask.Blueprint("views", __name__)
@@ -31,15 +33,19 @@ def get_downloads():
 
 @mod.route("/download", methods=["POST"])
 def post_download():
+    def _get_response(message: str, status_code: int = 200) -> tuple[Response, int]:
+        if status_code >= 400:
+            loguru.logger.error(message)
+        return flask.jsonify(message=message), status_code
+
     try:
         file = downloader.RemoteFile(flask.request.form["url"])
         file.download()
-        flask.flash(f"Download of '{file.name}' was started.")
+        return _get_response(f"Download of '{file.name}' was started.")
+    except InvalidUrlError as e:
+        return _get_response(str(e), 422)
     except Exception as e:
-        loguru.logger.error(str(e))
-        flask.flash(str(e))
-
-    return flask.redirect(flask.url_for("views.get_index"))
+        return _get_response(str(e), 500)
 
 
 @mod.route("/drive-space")

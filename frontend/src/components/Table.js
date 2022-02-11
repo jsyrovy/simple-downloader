@@ -1,4 +1,5 @@
 import {Component} from "react";
+import {BACKEND_URL} from "../Constants";
 
 class Table extends Component {
     state = {
@@ -6,7 +7,7 @@ class Table extends Component {
     }
 
     componentDidMount() {
-        fetch('http://127.0.0.1:5000/downloads')
+        fetch(`${BACKEND_URL}/downloads`)
             .then(res => res.json())
             .then((data) => {
                 this.setState({downloads: data.downloads})

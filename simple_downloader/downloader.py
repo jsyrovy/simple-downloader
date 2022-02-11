@@ -16,13 +16,17 @@ ESCAPED_NAME_SEPARATOR = "|"
 IGNORED_FILES = (".ds_store", "._.ds_store")
 
 
+class InvalidUrlError(Exception):
+    ...
+
+
 class RemoteFile:
     def __init__(self, url: str) -> None:
         self.__url = urllib.parse.urlparse(url)
         self.name = pathlib.Path(self.__url.path).name
 
         if not self.__is_valid():
-            raise AttributeError("URL isn't valid.")
+            raise InvalidUrlError("URL isn't valid.")
 
     def download(self) -> None:
         Downloader().download(self.__url.geturl(), self.name)
