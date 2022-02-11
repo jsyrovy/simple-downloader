@@ -1,10 +1,14 @@
-from selenium import webdriver
 import unittest
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 
 class TestDownloadedFile(unittest.TestCase):
     def setUp(self):
-        self.driver = webdriver.Chrome()
+        options = Options()
+        options.add_argument('--headless')
+        self.driver = webdriver.Chrome(options=options)
 
     def tearDown(self):
         self.driver.close()
